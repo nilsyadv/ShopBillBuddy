@@ -1,7 +1,7 @@
 package logger
 
 import (
-	"github.com/nilsyadv/ShopBillBuddy/pkg/config"
+	"github.com/nilsyadv/ShopBillBuddy/common/pkg/config"
 	"github.com/rs/zerolog"
 )
 
