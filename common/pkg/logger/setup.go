@@ -10,7 +10,7 @@ import (
 
 // Init initializes the logger with the given log level and output.
 // It should be called only once, in the main function.
-func Init(level string, output string) (InterfaceLogger, error) {
+func InitLogger(level string, output string) (InterfaceLogger, error) {
 	// Set the log level
 	zerolog.SetGlobalLevel(zerolog.InfoLevel)
 	switch level {

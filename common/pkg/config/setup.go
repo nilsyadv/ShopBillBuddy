@@ -17,6 +17,7 @@ import (
 // encapsulates the Viper configuration for further use.
 func InitConfig(envname, envtype string) (InterfaceConfig, error) {
 	vp := viper.New()
+	vp.AddConfigPath(".")
 	vp.AddConfigPath("/config")
 	vp.SetConfigName(envname)
 	vp.SetConfigType(envtype)
