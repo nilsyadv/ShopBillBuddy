@@ -18,7 +18,8 @@ import (
 func InitConfig(envname, envtype string) (InterfaceConfig, error) {
 	vp := viper.New()
 	vp.AddConfigPath(".")
-	vp.AddConfigPath("/config")
+	vp.AddConfigPath("/config/")
+	vp.AddConfigPath("./config/")
 	vp.SetConfigName(envname)
 	vp.SetConfigType(envtype)
 	if err := vp.ReadInConfig(); err != nil {
