@@ -1,11 +1,14 @@
 module github.com/nilsyadv/ShopBillBuddy/customer
 
-go 1.21
+go 1.21.0
+
+toolchain go1.21.4
 
 require github.com/nilsyadv/ShopBillBuddy/common v0.0.0-20231111110135-e836c19f62e5
 
 require (
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
+	github.com/gorilla/mux v1.8.1 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect

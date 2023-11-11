@@ -8,6 +8,7 @@ import (
 )
 
 func main() {
+	///----
 	conf, werr := config.InitConf("config", "json")
 	if werr != nil {
 		log.Fatal(werr.Error())

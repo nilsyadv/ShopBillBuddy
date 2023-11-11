@@ -9,13 +9,12 @@ FROM golang:alpine3.16 AS builder
 RUN apk update && apk add curl && apk add coreutils && apk add gcc libc-dev
 COPY --from=deps /customer /customer
 WORKDIR /customer
-CMD ls
 RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -ldflags '-linkmode=external' -o /build /customer/cmd/
 
 # Final stage
 FROM golang:alpine3.16
 RUN apk --no-cache add curl ca-certificates tzdata
-COPY --from=builder /customer/config /customer/config
+COPY --from=builder /customer/config /config
 COPY --from=builder /customer/deployment /customer/deployment
 COPY --from=builder /build /cmd/main
 RUN chmod +x /cmd/main
