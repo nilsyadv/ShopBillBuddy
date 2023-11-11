@@ -1,7 +1,6 @@
 package logger
 
 import (
-	"github.com/nilsyadv/ShopBillBuddy/common/pkg/config"
 	"github.com/rs/zerolog"
 )
 
@@ -17,10 +16,6 @@ type InterfaceLogger interface {
 
 type CustomeLogger struct {
 	logger zerolog.Logger
-}
-
-func InitLogger(conf config.InterfaceConfig) InterfaceLogger {
-	return &CustomeLogger{}
 }
 
 // Debug logs a debug message.
