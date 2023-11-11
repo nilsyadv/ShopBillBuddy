@@ -1,9 +1,9 @@
-module github.com/nilsyadv/ShopBillBuddy
+module github.com/nilsyadv/ShopBillBuddy/common
 
 go 1.21.0
 
 require (
-	github.com/fsnotify/fsnotify v1.6.0
+	github.com/fsnotify/fsnotify v1.7.0
 	github.com/rs/zerolog v1.31.0
 	github.com/spf13/viper v1.17.0
 )
