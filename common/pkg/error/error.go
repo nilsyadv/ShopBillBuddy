@@ -21,3 +21,21 @@ func Wrap(err error, info, errtype string, code int) *WrappedError {
 		ErrCode: code,
 	}
 }
+
+func NewDBErrorWrap(err error, info string, code int) *WrappedError {
+	return &WrappedError{
+		Context: info,
+		Err:     err,
+		ErrType: "dberror",
+		ErrCode: code,
+	}
+}
+
+func NewValidationErrorWrap(err error, info string, code int) *WrappedError {
+	return &WrappedError{
+		Context: info,
+		Err:     err,
+		ErrType: "dberror",
+		ErrCode: code,
+	}
+}
