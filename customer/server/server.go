@@ -8,23 +8,32 @@ import (
 	"github.com/nilsyadv/ShopBillBuddy/common/pkg/logger"
 )
 
-type Server struct {
+// CustomerServer represents the HTTP server for the Core Utility application.
+type CustomerServer struct {
 	conf   config.InterfaceConfig
 	logger logger.InterfaceLogger
+	router *mux.Router
 }
 
-func (serv Server) InitServer() {
+func NewCustomerServer(router *mux.Router, conf config.InterfaceConfig, log logger.InterfaceLogger) *CustomerServer {
+	return &CustomerServer{
+		conf:   conf,
+		logger: log,
+		router: router,
+	}
+}
 
-	routes := mux.NewRouter()
-
+// InitServer initializes the HTTP server with the provided router.
+// It starts the server on the configured address and port.
+func (srv CustomerServer) InitServer() {
+	// Create an HTTP server with the specified address, port, and router
 	server := http.Server{
-		Addr:    serv.conf.GetString("server.host") + ":" + serv.conf.GetString("server.port"),
-		Handler: routes,
+		Addr:    srv.conf.GetString("app.addr") + ":" + srv.conf.GetString("app.port"),
+		Handler: srv.router,
 	}
 
-	serv.logger.Info("Customer Server started on " + server.Addr)
-
+	// Start the HTTP server and log any errors
 	if err := server.ListenAndServe(); err != nil {
-		serv.logger.Fatal("fatal", err)
+		srv.logger.Error("server shutting down", err)
 	}
 }
