@@ -7,21 +7,20 @@ import (
 
 	wraperror "github.com/nilsyadv/ShopBillBuddy/common/pkg/error"
 
-	uuid "github.com/satori/go.uuid"
 	"gorm.io/gorm"
 )
 
 // Repository represents generic interface for interacting with DB
 type Repository interface {
-	Get(uow *UnitOfWork, out interface{}, id uuid.UUID, preloadAssociations []string) *wraperror.WrappedError
+	Get(uow *UnitOfWork, out interface{}, id string, preloadAssociations []string) *wraperror.WrappedError
 	GetFirst(uow *UnitOfWork, out interface{}, queryProcessors []QueryProcessor) *wraperror.WrappedError
-	GetForTenant(uow *UnitOfWork, out interface{}, id string, tenantID uuid.UUID, preloadAssociations []string) *wraperror.WrappedError
+	GetForTenant(uow *UnitOfWork, out interface{}, id string, tenantID string, preloadAssociations []string) *wraperror.WrappedError
 	GetAll(uow *UnitOfWork, out interface{}, queryProcessors []QueryProcessor) *wraperror.WrappedError
-	GetAllForTenant(uow *UnitOfWork, out interface{}, tenantID uuid.UUID, queryProcessors []QueryProcessor) *wraperror.WrappedError
+	GetAllForTenant(uow *UnitOfWork, out interface{}, tenantID string, queryProcessors []QueryProcessor) *wraperror.WrappedError
 	GetAllUnscoped(uow *UnitOfWork, out interface{}, queryProcessors []QueryProcessor) *wraperror.WrappedError
-	GetAllUnscopedForTenant(uow *UnitOfWork, out interface{}, tenantID uuid.UUID, queryProcessors []QueryProcessor) *wraperror.WrappedError
+	GetAllUnscopedForTenant(uow *UnitOfWork, out interface{}, tenantID string, queryProcessors []QueryProcessor) *wraperror.WrappedError
 	GetCount(uow *UnitOfWork, out *int64, entity interface{}, queryProcessors []QueryProcessor) *wraperror.WrappedError
-	GetCountForTenant(uow *UnitOfWork, out *int64, tenantID uuid.UUID, entity interface{}, queryProcessors []QueryProcessor) *wraperror.WrappedError
+	GetCountForTenant(uow *UnitOfWork, out *int64, tenantID string, entity interface{}, queryProcessors []QueryProcessor) *wraperror.WrappedError
 
 	Add(uow *UnitOfWork, out interface{}) *wraperror.WrappedError
 	AddWithOmit(uow *UnitOfWork, out interface{}, omitFields []string) *wraperror.WrappedError
@@ -29,7 +28,7 @@ type Repository interface {
 	UpdateWithOmit(uow *UnitOfWork, out interface{}, omitFields []string) *wraperror.WrappedError
 	Upsert(uow *UnitOfWork, out interface{}, queryProcessors []QueryProcessor) *wraperror.WrappedError
 	Delete(uow *UnitOfWork, out interface{}, where ...interface{}) *wraperror.WrappedError
-	DeleteForTenant(uow *UnitOfWork, out interface{}, tenantID uuid.UUID) *wraperror.WrappedError
+	DeleteForTenant(uow *UnitOfWork, out interface{}, tenantID string) *wraperror.WrappedError
 	DeletePermanent(uow *UnitOfWork, out interface{}, where ...interface{}) *wraperror.WrappedError
 
 	AddAssociations(uow *UnitOfWork, out interface{}, associationName string, associations ...interface{}) *wraperror.WrappedError
@@ -180,7 +179,7 @@ func (repository *GormRepository) GetFirst(uow *UnitOfWork, out interface{}, que
 }
 
 // Get a record for specified entity with specific id
-func (repository *GormRepository) Get(uow *UnitOfWork, out interface{}, id uuid.UUID, preloadAssociations []string) *wraperror.WrappedError {
+func (repository *GormRepository) Get(uow *UnitOfWork, out interface{}, id string, preloadAssociations []string) *wraperror.WrappedError {
 	db := uow.DB
 	for _, association := range preloadAssociations {
 		db = db.Preload(association)
@@ -192,7 +191,7 @@ func (repository *GormRepository) Get(uow *UnitOfWork, out interface{}, id uuid.
 }
 
 // GetForTenant a record for specified entity with specific id and for specified tenant
-func (repository *GormRepository) GetForTenant(uow *UnitOfWork, out interface{}, id string, tenantID uuid.UUID, preloadAssociations []string) *wraperror.WrappedError {
+func (repository *GormRepository) GetForTenant(uow *UnitOfWork, out interface{}, id string, tenantID string, preloadAssociations []string) *wraperror.WrappedError {
 	db := uow.DB
 	for _, association := range preloadAssociations {
 		db = db.Preload(association)
@@ -223,7 +222,7 @@ func (repository *GormRepository) GetAll(uow *UnitOfWork, out interface{}, query
 }
 
 // GetAllForTenant returns all objects of specifeid tenantID
-func (repository *GormRepository) GetAllForTenant(uow *UnitOfWork, out interface{}, tenantID uuid.UUID, queryProcessors []QueryProcessor) *wraperror.WrappedError {
+func (repository *GormRepository) GetAllForTenant(uow *UnitOfWork, out interface{}, tenantID string, queryProcessors []QueryProcessor) *wraperror.WrappedError {
 	queryProcessors = append([]QueryProcessor{Filter("tenantID = ?", tenantID)}, queryProcessors...)
 	return repository.GetAll(uow, out, queryProcessors)
 }
@@ -248,7 +247,7 @@ func (repository *GormRepository) GetAllUnscoped(uow *UnitOfWork, out interface{
 }
 
 // GetAllUnscopedForTenant returns all objects (including deleted) of specifeid tenantID
-func (repository *GormRepository) GetAllUnscopedForTenant(uow *UnitOfWork, out interface{}, tenantID uuid.UUID, queryProcessors []QueryProcessor) *wraperror.WrappedError {
+func (repository *GormRepository) GetAllUnscopedForTenant(uow *UnitOfWork, out interface{}, tenantID string, queryProcessors []QueryProcessor) *wraperror.WrappedError {
 	queryProcessors = append([]QueryProcessor{Filter("tenantID = ?", tenantID)}, queryProcessors...)
 	return repository.GetAllUnscoped(uow, out, queryProcessors)
 }
@@ -273,7 +272,7 @@ func (repository *GormRepository) GetCount(uow *UnitOfWork, count *int64, entity
 }
 
 // GetCountForTenant gets count of the given entity type for specified tenant
-func (repository *GormRepository) GetCountForTenant(uow *UnitOfWork, count *int64, tenantID uuid.UUID, entity interface{}, queryProcessors []QueryProcessor) *wraperror.WrappedError {
+func (repository *GormRepository) GetCountForTenant(uow *UnitOfWork, count *int64, tenantID string, entity interface{}, queryProcessors []QueryProcessor) *wraperror.WrappedError {
 
 	db := uow.DB.Where("tenantID = ?", tenantID)
 
@@ -359,7 +358,7 @@ func (repository *GormRepository) Delete(uow *UnitOfWork, entity interface{}, wh
 }
 
 // DeleteForTenant all recrod(s) of specified entity / entity type for given tenant
-func (repository *GormRepository) DeleteForTenant(uow *UnitOfWork, entity interface{}, tenantID uuid.UUID) *wraperror.WrappedError {
+func (repository *GormRepository) DeleteForTenant(uow *UnitOfWork, entity interface{}, tenantID string) *wraperror.WrappedError {
 	if err := uow.DB.Delete(entity, "tenantid = ?", tenantID).Error; err != nil {
 		return wraperror.NewDBErrorWrap(err, "encounter during delete records for tenant", http.StatusInternalServerError)
 	}
