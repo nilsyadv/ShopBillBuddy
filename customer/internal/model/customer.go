@@ -1,10 +1,13 @@
 package model
 
+import "encoding/json"
+
 type Customer struct {
+	ID      string
 	Name    string
 	Remark  string
-	Contact Contact
-	Address Address
+	Contact json.RawMessage
+	Address json.RawMessage
 }
 
 type Contact struct {
