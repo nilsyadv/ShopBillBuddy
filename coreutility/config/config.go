@@ -9,7 +9,7 @@ import (
 )
 
 func InitConfig() (config.InterfaceConfig, *wraperror.WrappedError) {
-	conf, err := config.InitConfig("coreutility", "json")
+	conf, err := config.InitConfig("config", "json")
 	if err != nil {
 		werr := wraperror.Wrap(err, "encounter error during config setup", "error", http.StatusInternalServerError)
 		log.Println(err)

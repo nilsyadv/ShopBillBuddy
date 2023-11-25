@@ -5,44 +5,51 @@ import (
 	"github.com/nilsyadv/ShopBillBuddy/common/pkg/logger"
 	"github.com/nilsyadv/ShopBillBuddy/common/pkg/repository"
 	"github.com/nilsyadv/ShopBillBuddy/customer/internal/model"
-	uuid "github.com/satori/go.uuid"
 	"gorm.io/gorm"
 )
 
-type customerService struct {
+// CustomerService handles business logic related to customers
+type CustomerService struct {
 	logger *logger.InterfaceLogger
 	repo   repository.Repository
 	db     *gorm.DB
 }
 
-func NewCustomerService(logger *logger.InterfaceLogger, db *gorm.DB, repo repository.Repository) *customerService {
-	return &customerService{
+// NewCustomerService creates a new instance of CustomerService
+func NewCustomerService(logger *logger.InterfaceLogger, db *gorm.DB, repo repository.Repository) *CustomerService {
+	return &CustomerService{
 		logger: logger,
 		db:     db,
 		repo:   repo,
 	}
 }
 
-func (custser *customerService) InsertNewCustomer(customer *model.Customer) *wraperror.WrappedError {
-	uow := repository.NewUnitOfWork(custser.db, false, *custser.logger)
-	return custser.repo.Add(uow, customer)
+// InsertNewCustomer inserts a new customer into the database
+func (custSer *CustomerService) InsertNewCustomer(customer *model.Customer) *wraperror.WrappedError {
+	uow := repository.NewUnitOfWork(custSer.db, false, *custSer.logger)
+	return custSer.repo.Add(uow, customer)
 }
 
-func (custser *customerService) UpdateCustomer(customer *model.Customer) *wraperror.WrappedError {
-	uow := repository.NewUnitOfWork(custser.db, false, *custser.logger)
-	return custser.repo.Update(uow, customer)
+// UpdateCustomer updates an existing customer in the database
+func (custSer *CustomerService) UpdateCustomer(customer *model.Customer) *wraperror.WrappedError {
+	uow := repository.NewUnitOfWork(custSer.db, false, *custSer.logger)
+	return custSer.repo.Update(uow, customer)
 }
 
-func (custser *customerService) DeleteCustomer(customer *model.Customer) *wraperror.WrappedError {
-	uow := repository.NewUnitOfWork(custser.db, false, *custser.logger)
-	return custser.repo.Delete(uow, customer, repository.Filter("id = ?", customer.ID))
+// DeleteCustomer deletes an existing customer from the database
+func (custSer *CustomerService) DeleteCustomer(customer *model.Customer) *wraperror.WrappedError {
+	uow := repository.NewUnitOfWork(custSer.db, false, *custSer.logger)
+	return custSer.repo.Delete(uow, customer, repository.Filter("id = ?", customer.ID))
 }
 
-func (custser *customerService) GetCustomer(customerID string, customer *model.Customer) *wraperror.WrappedError {
-	uow := repository.NewUnitOfWork(custser.db, false, *custser.logger)
-	return custser.repo.Get(uow, customer, uuid.UUID{})
+// GetCustomer retrieves a customer by ID from the database
+func (custSer *CustomerService) GetCustomer(customerID string, customer *model.Customer) *wraperror.WrappedError {
+	uow := repository.NewUnitOfWork(custSer.db, false, *custSer.logger)
+	return custSer.repo.Get(uow, customer, customerID, []string{})
 }
 
-func (custser *customerService) GetsCustomer() *wraperror.WrappedError {
-	return nil
+// GetsCustomer retrieves all customers from the database
+func (custSer *CustomerService) GetCustomers(customers []*model.Customer) *wraperror.WrappedError {
+	uow := repository.NewUnitOfWork(custSer.db, false, *custSer.logger)
+	return custSer.repo.GetAll(uow, customers, []repository.QueryProcessor{})
 }

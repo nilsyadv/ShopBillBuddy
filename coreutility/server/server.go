@@ -32,6 +32,8 @@ func (srv CoreutiltiyServer) InitServer() {
 		Handler: srv.router,
 	}
 
+	srv.logger.Infof("Coreutility running on %s", srv.conf.GetString("app.addr")+":"+srv.conf.GetString("app.port"))
+
 	// Start the HTTP server and log any errors
 	if err := server.ListenAndServe(); err != nil {
 		srv.logger.Error("server shutting down", err)

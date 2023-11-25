@@ -1,11 +1,10 @@
-module github.com/nilsyadv/ShopBillBuddy/customer
+module github.com/nilsyadv/ShopBillBuddy/product
 
 go 1.21
 
 require (
 	github.com/gorilla/mux v1.8.1
 	github.com/nilsyadv/ShopBillBuddy/common v0.0.0-20231121153842-44508f86e1b9
-	github.com/satori/go.uuid v1.2.0
 	gorm.io/gorm v1.25.5
 )
 

@@ -5,9 +5,9 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/nilsyadv/ShopBillBuddy/common/pkg/logger"
-	v1 "github.com/nilsyadv/ShopBillBuddy/customer/api/v1"
-	"github.com/nilsyadv/ShopBillBuddy/customer/config"
-	"github.com/nilsyadv/ShopBillBuddy/customer/server"
+	v1 "github.com/nilsyadv/ShopBillBuddy/product/api/v1"
+	"github.com/nilsyadv/ShopBillBuddy/product/config"
+	"github.com/nilsyadv/ShopBillBuddy/product/server"
 )
 
 func main() {
@@ -27,10 +27,10 @@ func main() {
 	router := mux.NewRouter()
 
 	// setup routes
-	custroutes := v1.NewCustomerRouter(config, logger)
+	custroutes := v1.NewProductRouter(config, logger)
 	custroutes.InitRouter(router)
 
-	// Create and initialize the HTTP server for the Customer service
-	customerServer := server.NewCustomerServer(router, config, logger)
-	customerServer.InitServer()
+	// Create and initialize the HTTP server for the Product service
+	productServer := server.NewProductServer(router, config, logger)
+	productServer.InitServer()
 }

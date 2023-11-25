@@ -1,6 +1,6 @@
 module github.com/nilsyadv/ShopBillBuddy/coreutility
 
-go 1.21.4
+go 1.21
 
 require (
 	github.com/go-redis/redis v6.15.9+incompatible
@@ -9,12 +9,16 @@ require (
 )
 
 require (
+	github.com/cespare/reflex v0.3.1 // indirect
+	github.com/creack/pty v1.1.11 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
+	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.19 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
+	github.com/ogier/pflag v0.0.1 // indirect
 	github.com/onsi/ginkgo v1.16.5 // indirect
 	github.com/onsi/gomega v1.30.0 // indirect
 	github.com/pelletier/go-toml/v2 v2.1.0 // indirect
