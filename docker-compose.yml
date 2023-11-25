@@ -1,35 +1,41 @@
 version: '3'
 services:
-  # zookeeper:
-  #   image: wurstmeister/zookeeper:latest
-  #   container_name: zookeeper
-  #   ports:
-  #     - "2181:2181"
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - 22181:2181
+  
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - zookeeper
+    ports:
+      - 29092:29092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
-  # kafka:
-  #   image: wurstmeister/kafka:2.13-2.8.0
-  #   container_name: kafka
-  #   ports:
-  #     - "9092:9092"
-  #   expose:
-  #     - "9093"
-  #   environment:
-  #     KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka:9093,OUTSIDE://localhost:9092
-  #     KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
-  #     KAFKA_LISTENERS: INSIDE://0.0.0.0:9093,OUTSIDE://0.0.0.0:9092
-  #     KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
-  #     KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
-  #     KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
-  #     KAFKA_CREATE_TOPICS: "example-topic:1:1"
-  #   volumes:
-  #     - /var/run/docker.sock:/var/run/docker.sock
-  #   depends_on:
-  #     - zookeeper
+  redis:
+    image: "redis:latest"
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - shopbillbuddy
 
   postgres:
     image: postgres:latest
     container_name: db_shopbillbuddy
     environment:
+      TZ: Asia/Kolkata
       POSTGRES_DB: shopbillbuddy
       POSTGRES_USER: shopbillbuddy_user
       POSTGRES_PASSWORD: shopbillbuddy_pwd
@@ -37,6 +43,8 @@ services:
       - "8014:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
+    networks:
+      - shopbillbuddy
 
   coreutility:
     container_name: core_utility
@@ -47,10 +55,14 @@ services:
     image: golang:alpine3.16
     command: sh /deployment/coreutility/dev.sh
     working_dir: /usr/local/go/src/ShopBillBuddy/coreutility
+    environment:
+      - TZ=Asia/Kolkata
     volumes:
       - ./deployment:/deployment
       - ./coreutility:/usr/local/go/src/ShopBillBuddy/coreutility
       - ./common:/usr/local/go/src/ShopBillBuddy/common
+    networks:
+      - shopbillbuddy
 
   customer:
     container_name: customer
@@ -61,10 +73,14 @@ services:
     image: golang:alpine3.16
     command: sh /deployment/customer/dev.sh
     working_dir: /usr/local/go/src/ShopBillBuddy/customer
+    environment:
+      - TZ=Asia/Kolkata
     volumes:
       - ./deployment:/deployment
       - ./customer:/usr/local/go/src/ShopBillBuddy/customer
       - ./common:/usr/local/go/src/ShopBillBuddy/common
+    networks:
+      - shopbillbuddy
 
   product:
     container_name: product
@@ -75,10 +91,14 @@ services:
     image: golang:alpine3.16
     command: sh /deployment/product/dev.sh
     working_dir: /usr/local/go/src/ShopBillBuddy/product
+    environment:
+      - TZ=Asia/Kolkata
     volumes:
       - ./deployment:/deployment
       - ./product:/usr/local/go/src/ShopBillBuddy/product
       - ./common:/usr/local/go/src/ShopBillBuddy/common
+    networks:
+      - shopbillbuddy
 
 
   shop:
@@ -90,11 +110,20 @@ services:
     image: golang:alpine3.16
     command: sh /deployment/shop/dev.sh
     working_dir: /usr/local/go/src/ShopBillBuddy/shop
+    environment:
+      - TZ=Asia/Kolkata
     volumes:
       - ./deployment:/deployment
       - ./shop:/usr/local/go/src/ShopBillBuddy/shop
       - ./common:/usr/local/go/src/ShopBillBuddy/common
+    networks:
+      - shopbillbuddy
     
 
 volumes:
   postgres-data:
+  redis_data:
+
+networks:
+  shopbillbuddy:
+    external: true
