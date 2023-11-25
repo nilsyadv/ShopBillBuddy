@@ -1,0 +1,10 @@
+{
+    "logger":{
+        "level":"info",
+        "output":"stdout"
+    },
+    "app":{
+        "port":"8010",
+        "addr":""
+    }
+}
